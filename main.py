@@ -24,15 +24,23 @@ def load_channels():
 
 # Отправка сообщения в канал
 async def send_message(channel_id, message):
-	try:
-		await bot.send_message(
-			chat_id=channel_id,
-			text=message
-		)
+	for i in range(5):
+		try:
+			await bot.send_message(
+				chat_id=channel_id,
+				text=message
+			)
 
-		logger.info(f'CHANNEL={channel_id}, MESSAGE="send"')
-	except Exception as e:
-		logger.error(f'CHANNEL={channel_id}, MESSAGE="{e}"')
+			logger.info(f'CHANNEL={channel_id}, MESSAGE="send, attempt {i + 1}"')
+
+			return
+		except Exception as e:
+			logger.error(f'CHANNEL={channel_id}, MESSAGE="{e}, attempt {i + 1}"')
+
+		logger.debug(f'CHANNEL={channel_id}, MESSAGE="sleep for one minute"')
+		await asyncio.sleep(60)
+
+	logger.error(f'CHANNEL={channel_id}, MESSAGE="cant send in 5 attempts"')
 
 
 # Установка задач для отправки сообщений
