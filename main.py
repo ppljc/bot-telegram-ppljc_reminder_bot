@@ -1,5 +1,7 @@
 # Python модули
 from aiogram import Bot
+from aiohttp import BasicAuth
+from aiogram.client.session.aiohttp import AiohttpSession
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 import asyncio
@@ -8,11 +10,17 @@ import json
 
 # Локальные модули
 from logger import logger
-from config import BOT_TOKEN, JSON_FILE
+from config import BOT_TOKEN, JSON_FILE, PROXY_SCHEME, PROXY_PORT, PROXY_LOGIN, PROXY_HOSTNAME, PROXY_PASSWORD
 
 
 # Переменные
-bot = Bot(token=BOT_TOKEN)
+auth = BasicAuth(login=PROXY_LOGIN, password=PROXY_PASSWORD)
+session = AiohttpSession(proxy=(f'{PROXY_SCHEME}://{PROXY_HOSTNAME}:{PROXY_PORT}', auth))
+
+bot = Bot(
+	token=BOT_TOKEN,
+	session=session
+)
 scheduler = AsyncIOScheduler()
 
 
